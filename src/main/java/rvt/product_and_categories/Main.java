@@ -126,11 +126,61 @@ public class Main {
     }
 
     public static void showCategory() {
+        String sql = "SELECT * FROM categories";
 
+        try (
+                Connection conn = DatabaseConnection.connect();
+                Statement stmt = conn.createStatement();
+                ResultSet rs = stmt.executeQuery(sql)
+        ) {
+
+            System.out.println("\n=== Categories ===");
+
+            while (rs.next()) {
+
+                System.out.println(
+                        rs.getInt("id") + " | " +
+                        rs.getString("name")
+                );
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
     
     public static void showProduct() {
+        String sql = """
+                SELECT products.id,
+                       products.name,
+                       products.price,
+                       categories.name AS category
+                FROM products
+                JOIN categories
+                ON products.category_id = categories.id
+                """;
 
+        try (
+                Connection conn = DatabaseConnection.connect();
+                Statement stmt = conn.createStatement();
+                ResultSet rs = stmt.executeQuery(sql)
+        ) {
+
+            System.out.println("\n=== Products ===");
+
+            while (rs.next()) {
+
+                System.out.println(
+                        rs.getInt("id") + " | " +
+                        rs.getString("name") + " | " +
+                        rs.getDouble("price") + " | " +
+                        rs.getString("category")
+                );
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     public static void searchProduct() {
@@ -138,7 +188,37 @@ public class Main {
         String categoryName = scanner.nextLine();
 
         String sql = """
-            SELECT 
-        """;
+                SELECT products.name,
+                       products.price,
+                       categories.name AS category
+                FROM products
+                JOIN categories
+                ON products.category_id = categories.id
+                WHERE categories.name = ?
+                """;
+
+        try (
+                Connection conn = DatabaseConnection.connect();
+                PreparedStatement ps = conn.prepareStatement(sql)
+        ) {
+
+            ps.setString(1, categoryName);
+
+            ResultSet rs = ps.executeQuery();
+
+            System.out.println("\n=== Search Result ===");
+
+            while (rs.next()) {
+
+                System.out.println(
+                        rs.getString("name") + " | " +
+                        rs.getDouble("price") + " | " +
+                        rs.getString("category")
+                );
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 }
