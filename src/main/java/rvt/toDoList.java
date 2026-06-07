@@ -67,11 +67,11 @@ public class toDoList {
             String inputCom = "";
             String input = "";
 
-            while (inputCom != "stop") {    //                                 NESTRADA
+            while (!inputCom.equals("stop")) {    
                 System.out.print("Command: ");
                 inputCom = scan.nextLine();
 
-                if (inputCom == "add") {
+                if (inputCom.equals("add")) {
                     System.out.print("To add: ");
                     input = scan.nextLine();
 
@@ -79,23 +79,24 @@ public class toDoList {
                     arr[arr.length - 1] = input;
                 }
 
-                if (inputCom == "list") {
+                if (inputCom.equals("list")) {
                     for (int i = 0; i < arr.length; i++) {
                         System.out.println((i + 1) + " " + arr[i]);
                     }
                 }
-                    
-                if (inputCom == "remove") {
-                    System.out.print("Which one is removed?: ");
+
+                if (inputCom.equals("completed")) {
+                    System.out.print("Which one is completed?: ");
                     int number = scan.nextInt();
+                    scan.nextLine();
 
                     if (number == arr.length){
                         arr = Arrays.copyOf(arr, arr.length-1);
                     }else{
                         for (int i=number-1; i < arr.length-1; i++) {
-                        arr[i] = arr[i+1];
-                    }
-                    arr = Arrays.copyOf(arr, arr.length-1);
+                            arr[i] = arr[i+1];
+                        }
+                        arr = Arrays.copyOf(arr, arr.length-1);
                     }
                 }
             }
